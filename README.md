@@ -19,7 +19,7 @@ One of the main added functionality with USI is the ability to store preferences
 
 ## Proposed changes
 
-We are proposing the following changes in the Pointer Events specification. Web developers are expected to consume stylus events through the PointerEvents API, we intend to extend it to support the new preferences. If the hardware does not support the capabilities the fields will be set to ```null```. This matches the behavior of the other fields when the hardware does not support it (e.g. tilt).
+We are proposing the following changes in the Pointer Events specification. Web developers are expected to consume stylus events through the PointerEvents API, we intend to extend it to support the new customizations. If the hardware does not support the capabilities the fields will be set to default value. This matches the behavior of the other fields when the hardware does not support it (e.g. tilt).
 
 
 ### Pointer Events
@@ -37,10 +37,8 @@ dictionary PointerEventInit : MouseEventInit {
     long        twist = 0;
     double      altitudeAngle;
     double      azimuthAngle;
-    ##### NEW PROPERTIES #####
-    DOMString   preferredColor;
-    DOMString   preferredType;
-    double      preferredWidth;
+    ##### NEW FIELD #####
+    PenCustomizationDetails penCustomizationDetails = {};
     ##########################
     DOMString   pointerType = "";
     boolean     isPrimary = false;
@@ -61,47 +59,33 @@ interface PointerEvent : MouseEvent {
     readonly        attribute long        twist;
     readonly        attribute double      altitudeAngle;
     readonly        attribute double      azimuthAngle;
-    ##### NEW PROPERTIES #####
-    readonly        attribute DOMString   preferredColor;
-    readonly        attribute DOMString   preferredType;
-    readonly        attribute double      preferredWidth;
+    ##### NEW FIELD #####
+    PenCustomizationDetails getPenCustomizationDetails();
     ##########################
     readonly        attribute DOMString   pointerType;
     readonly        attribute boolean     isPrimary;
     [SecureContext] sequence<PointerEvent> getCoalescedEvents();
     sequence<PointerEvent> getPredictedEvents();
 };
-```
 
-### Setting preferences in the stylus' memory
-
-In order to set preferences on the stylus memory we need a new interface to send the new values to the stylus.
-
-```
-partial interface Navigator {
-    sequence<StylusCustomizations?> getStylusCustomizations();
-};
-```
-
-The returned array will be ```null``` if the user is not using styluses supporting customizations.
-
-```
-[Exposed=Window, SecureContext]
-interface StylusCustomizations {
-  readonly attribute long index;
-  Promise<DOMString> setPreferredColor(DOMString preferredColor);
-  Promise<DOMString> setPreferredType(DOMString preferredType);
-  Promise<DOMString> setPreferredWidth(double preferredWidth);
-  Promise<WrittenCustomizations> setCustomizations(StylusCustomizations
+interface PenCustomizationDetails {
+    readonly        attribute long penId;
+    readonly        attribute DOMString   preferredInkingColor;
+    readonly        attribute DOMString   preferredInkingStyle;
+    readonly        attribute double      preferredInkingWidth;
+    Promise<DOMString> setPreferredInkingColor(id, DOMString preferredColor);
+    Promise<DOMString> setPreferredInkingStyle(id, DOMString preferredType);
+    Promise<undefined> setPreferredInkingWidth(id, double preferredWidth);
+    Promise<WrittenCustomizations> setCustomizations(PenCustomizations
                                        customizations = {});
-};
+}
 ```
 
 For each customization the promise will resolve if the customization was successfully written on the stylus. Most USI based stylus requires the stylus to be in proximity of the screen to successfully write data. It is strongly suggested to provide a UI in which the user will press with the stylus to write the customization.
 
-Each methods, setPreferredColor, setPreferredType and setPreferredWidth will resolve if the customization has been successfully saved. The promise will fail if writing to the stylus failed. The promise will resolve with the written color on the memory. At this point USI styluses can only store 24 bits color and if the color passed in setPreferredColor doesn't fit it will clamped to the closest possible color and returned.
+Each methods, setPreferredInkingColor, setPreferredInkingStyle and setPreferredInkingWidth will resolve if the customization has been successfully saved. The promise will fail if writing to the pen failed. The promise will resolve with the written color on the memory. At this point USI styluses can only store 24 bits color and if the color passed in setPreferredInkingColor doesn't fit it will clamped to the closest possible color and returned. Alpha channel colors are also not supported by USI pens so in this case the value will be ignored.
 
 The setCustomizations methods allows you to set multiple values in a single method call.
 
-Newer hardware can support multiple stylus at the same time therefore an index is required to identify the stylus to be targeted. The index of the stylus in the Navigator. When multiple styluses are connected to a user agent, indices MUST be assigned on a first-come, first-serve basis, starting at zero. If a stylus is going out of range, previously assigned indices MUST NOT be reassigned to styluses that continue to be connected. However, if a stylus is disconnected, and subsequently the same or a different stylus is then connected, the lowest previously used index MUST be reused.
+Newer hardware can support multiple pen at the same time therefore an id is required to identify the stylus to be targeted. When multiple styluses are connected to a user agent, indices MUST be assigned on a first-come, first-serve basis, starting at zero. If a stylus is going out of range, previously assigned indices MUST NOT be reassigned to styluses that continue to be connected. However, if a stylus is disconnected, and subsequently the same or a different stylus is then connected, the lowest previously used index MUST be reused.
 
