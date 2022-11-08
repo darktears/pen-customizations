@@ -39,9 +39,8 @@ interface PointerEvent : MouseEvent {
     readonly        attribute long        twist;
     readonly        attribute double      altitudeAngle;
     readonly        attribute double      azimuthAngle;
-    readonly        attribute PenCustomizationsDetails penCustomizations;
     ##### NEW FIELD #####
-    PenCustomizationsDetails penCustomizationsDetails;
+    readonly        attribute PenCustomizationsDetails penCustomizationsDetails;
     ##########################
     readonly        attribute DOMString   pointerType;
     readonly        attribute boolean     isPrimary;
