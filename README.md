@@ -74,8 +74,15 @@ function onWriteColor(color, event) {
 
 ```
 
-For each customizations the promise will resolve if the customization was successfully written on the stylus. Most USI based stylus requires the stylus to be in proximity of the screen to successfully write data. It is strongly suggested to provide a UI in which the user will press with the stylus to write the customization.
+Because Pen Customizations are only available for pens the ```penCustomizationsDetails``` field will be set to null if :
 
-Each methods, setPreferredInkingColor, setPreferredInkingStyle and setPreferredInkingWidth will resolve if the customization has been successfully saved. The promise will fail if writing to the pen failed. The promise will resolve with the written color on the memory. At this point USI styluses can only store 24 bits color and if the color passed in setPreferredInkingColor doesn't fit it will clamped to the closest possible color and returned. Alpha channel colors are also not supported by USI pens so in this case the value will be ignored.
+* The platform doesn't support pen customizations (for e.g. macOS, iOS, Android)
+* The Pointer Event is not of type ```pen```
+
+All methods in ```penCustomizationsDetails``` will resolve if the UA is able to retrieve/store the attributes from the stylus. In case it's not possible the UA will fail the promise with an error.
+
+Most USI based stylus requires the stylus to be in proximity of the screen to successfully write/retrieve data. It is strongly suggested to provide a UI in which the user will press with the stylus to write/read the customizations. For that same reason the ```penCustomizationsDetails``` is not defined on pointer up events because it will likely lead to a poor user experience : by the time the pointer up event is delivered the stylus is likely out of range. 
+
+Note on color support: At this point USI styluses can only store 24 bits color and if the color passed in setPreferredInkingColor doesn't fit it will clamped to the closest possible color and returned. Alpha channel colors are also not supported by USI pens so in this case the value will be ignored. 
 
 
