@@ -17,6 +17,8 @@ Created few years ago, the Universal Stylus Initiative, [USI](https://universals
 
 One of the main added functionality with USI is the ability to store preferences into the stylus itself. In other word a user can decide to store its favorite color which can then be retrieved by an application afterwards (whether or not it's on the same device). Supported attributes are colors, width and style.
 
+Example of use cases in this [video](https://www.youtube.com/watch?v=t_wQm3dPpqI).
+
 ## Proposed changes
 
 We are proposing the following changes in the Pointer Events specification. Web developers are expected to consume stylus events through the PointerEvents API, we intend to extend it to support the new customizations. If the hardware does not support the capabilities the fields will be set to default value. This matches the behavior of the other fields when the hardware does not support it (e.g. tilt).
