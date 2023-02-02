@@ -25,7 +25,7 @@ You can see the use cases in action here : [video](https://www.youtube.com/watch
 
 ## Proposed changes
 
-We are proposing the following changes in the Pointer Events specification. Web developers are expected to consume stylus events through the PointerEvents API, we intend to extend it to support the new customizations. If the hardware does not support the capabilities the added field will be set to undefined. This matches the behavior of the other fields when the hardware does not support it (e.g. tilt).
+We are proposing the following changes in the Pointer Events specification. Web developers are expected to consume stylus events through the PointerEvents API, we intend to extend it to support the new customizations. If the hardware does not support the capabilities the added field will be set to null. This matches the behavior of the other fields when the hardware does not support it (e.g. tilt).
 
 ### Pointer Events
 Here are few snippets of code to work with the proposed API.
