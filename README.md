@@ -35,14 +35,14 @@ Here are few snippets of code to work with the proposed API.
 function onPointerEvent(event) {
     let pointerEvent = event;
     let penCustomizations = pointerEvent.penCustomizationsDetails;
-    penCustomizations.getPreferredInkingColor().then(function(color) { brushColor = color } );
+    penCustomizations.getPreferredInkingColor().then(color => brushColor = color);
 }
 
-writeColorButton.addEventListener('onpointerdown', function(event) { this.onWriteColor(selectedColor, event)})
+writeColorButton.addEventListener('onpointerdown', event => this.onWriteColor(selectedColor, event))
 
 function onWriteColor(color, event) {
     let penCustomizations = event.penCustomizationsDetails;
-    penCustomization.setPreferredInkingColor(color).then(function(return) {console.log('success'} );
+    penCustomization.setPreferredInkingColor(color).then(_ => console.log('success');
 }
 
 ```
